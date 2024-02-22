@@ -278,6 +278,31 @@ input[type=submit]:hover {
 }
 
 /* END OF CREATE EVENT FORM */
+#editEventFormContainer {
+    width: 34%;
+    margin: auto;
+    text-align: center;
+}
+
+#editEventForm {
+    width: 100%;
+    font-family: 'Anta', serif;
+    font-size: 35px;
+    color: #836FFF;
+}
+
+#editEventForm label {
+    width: 50%;
+    float: left;
+}
+
+#editEventForm input {
+    float: right;
+}
+
+#editEventForm input[type=submit] {
+    width: 100%;
+}
 
 /* START OF EVENT BUTTONS */
 

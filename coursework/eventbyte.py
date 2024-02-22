@@ -137,6 +137,8 @@ def superHome():
         flash("Only admins can access this page.")
         return redirect('/home')
     
+    updateTickets()
+    
     return render_template('superHome.html', events=Event.query.all(), currTime = datetime.datetime.now())
 
 
@@ -277,17 +279,6 @@ def myEvents():
     return render_template('boughtEventsView.html', completedEvents=completedEvents, cancelledEvents=cancelledEvents, upcomingEvents=upcomingEvents, currTime = datetime.datetime(datetime.MINYEAR, 1, 1))
 
 
-# Route to edit the event. Only accessible to admins.
-@app.route('/editEvent')
-def editEvent():
-    # Make sure only admins can view this page. 
-    if not current_user.is_authenticated or current_user.userClass != "super":
-        flash("Only accessible to admins.")
-        return redirect('/')
-    
-    # Admins should be able to edit the capacity. They can only edit if the number of tickets sold is less than
-    # the capacity.
-
 # Route to create an event. Only accessible to admins.
 @app.route('/createEvent', methods=["GET", "POST"])
 def createEvent():
@@ -330,6 +321,31 @@ def createEvent():
     # For non-form website loading.
     if request.method == "GET":
         return render_template("createEvent.html")
+
+
+# Route to edit the event. Only accessible to admins.
+@app.route('/editEvent', methods=["GET", "POST"])
+def editEvent():
+    # Make sure only admins can view this page. 
+    if not current_user.is_authenticated or current_user.userClass != "super":
+        flash("Only accessible to admins.")
+        return redirect('/')
+    
+    # Admins should be able to edit the capacity. They can only edit if the number of tickets sold is less than
+    # the capacity.
+    if request.method == "GET":
+        eventID = request.args.get("eventid")
+        thisEvent = Event.query.filter_by(event_id=eventID).first()
+
+        return render_template('editEvent.html', event=thisEvent)
+    
+    if request.method == "POST":
+        # Validate whether the new capacity is viable.
+
+        # If yes, then update the database with the new capacity.
+
+        return redirect('/')   
+
 
     
 # Route tocurrTime = datetime.datetime.now() to authenticate a new event being added.
