@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block heading %}
+    <div class="title subtitle">
+        Create Event
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div id="createEventFormContainer">
+        <form action="createEvent" method="post" id="createEventForm">
+            <div class="rows">
+                <!-- Event Name -->
+                <div class="formGroup">
+                    <p><label for="eventName">Name</label>
+                    <input type="text" name="eventName"/></p>
+                </div><br>
+
+                <!-- Event Date -->
+                <div class="formGroup">
+                    <p><label for="eventDate">Date</label>
+                    <input type="date" name="eventDate"/></p>
+                </div><br>
+
+                <!-- Event Time -->
+                <div class="formGroup">
+                    <p><label for="eventTime">Start Time</label>
+                        <input type="time" name="eventTime"></p>
+                </div><br>
+
+                <!-- Event Duration -->
+                <div class="formGroup">
+                    <p><label for="eventDur">Duration</label>
+                        <input type="text" name="eventDur"></p>
+                </div><br>
+
+                <!-- Event Capacity -->
+                <div class="formGroup">
+                    <p><label for="eventCap">Capacity</label>
+                        <input type="text" name="eventCap"></p>
+                </div><br>
+
+                <!-- Event Location -->
+                <div class="formGroup">
+                    <p><label for="eventLoc">Location</label>
+                        <input type="text" name="eventLoc"></p>
+                </div>
+            </div><br><br>
+            <input type="submit" value="Create Event"/>
+        </form>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="loginFlashes">
+                {% for message in messages %}
+                <p> {{ message }} </p>
+                {% endfor %} 
+            </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+    
+{% endblock %}  

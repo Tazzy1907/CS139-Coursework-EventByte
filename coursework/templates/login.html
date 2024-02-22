@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block heading %}
+    <div class="title">
+        eventbyte
+    </div>
+{% endblock %}
+
+{% block content %}
+    <form action="login" method="post" id="loginForm">
+        <p><label for="username">Username</label>
+        <input type="text" name="username"/> </p>
+    
+        <p><label for="password">Password</label>
+        <input type="password" name="password"/> </p>
+    
+        <p><input type="submit" value="Submit"/> </p>
+    </form>
+    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="loginFlashes">
+            {% for message in messages %}
+            <p> {{ message }} </p>
+            {% endfor %} 
+        </div>
+        {% endif %}
+    {% endwith %}
+{% endblock %}
+

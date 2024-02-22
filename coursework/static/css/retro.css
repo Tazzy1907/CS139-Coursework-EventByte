@@ -1,0 +1,315 @@
+/* Colour theme is
+Dark Blue - #211951
+Purple - #551A8B
+Light Purple - #836FFF
+Green-ish - #15F5BA
+Grey - #F0F3FF
+*/
+
+body {
+    background-color: #211951;
+}
+
+#navunderline {
+    margin: auto;
+    width: 25%;
+    border-bottom: 3px #F0F3FF solid;
+    border-radius: 3px;
+}
+
+nav {
+    font-family: 'Anta', serif;
+    text-align: center;
+    font-size: 30px;
+    padding: 5px;
+    margin: 0;
+}
+
+nav a {
+    margin-right: 5px;
+    border-radius: 3px;
+    color: #836FFF;
+}
+
+nav a:hover {
+    background-color: #836FFF;
+    color: #15F5BA;
+}
+
+.title {
+    margin: auto;
+    width: 95%;
+    border: #F0F3FF 5px solid;
+    padding: 15px;
+    font-family: 'Anta', serif; 
+    font-size: 70px;
+    color: #15F5BA;
+    border-radius: 5px;
+    text-align: center;
+}
+
+/* All subtitle elements inherit the title class. */
+.subtitle {
+    font-size: 50px;
+}
+
+#acknowledgements {
+    font-family: 'Anta', serif;
+    text-align: center;
+    position: fixed;
+    margin: auto;
+    bottom: 5px;
+    width: 100%;
+    color: #F0F3FF;
+    font-size: 22px;
+}
+
+.standardContent {
+    font-family: 'Kanit', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #F0F3FF;
+    font-size: 25px;
+    margin-left: 30px;
+    margin-right: 30px;
+}
+
+#loginForm {
+    text-align: center;
+    font-family: 'Anta', serif;
+    font-size: 35px;
+    color: #836FFF;
+}
+
+
+input[type=text], input[type=password], input[type=email], input[type=time], input[type=date]{
+    padding: 10px;
+    border-radius: 9px;
+    font-size: 18px;
+    font-family: 'Kanit', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #F0F3FF;
+    background: rgba(131, 111, 255, 0.25);    
+}
+
+input[type=submit] {
+    width: 10%;
+    font-size: 25px;
+    font-family: 'Anta', serif;
+    padding: 10px;
+    border-radius: 9px;
+    color: #551A8B;
+    background-color: #836FFF;
+}
+
+input[type=submit]:hover {
+    color: #15F5BA;
+}
+
+#registerFormContainer {
+    width: 30%;
+    margin: auto;
+}
+
+#registerForm {
+    width: 100%;
+    font-family: 'Anta', serif;
+    font-size: 35px;
+    color: #836FFF;
+}
+
+#registerForm #rows {
+    width: 100%;
+    display: block;
+}
+
+#registerForm #formGroup {
+    width: 100%;
+    display: inline-block;
+    padding: 10px;
+}
+
+#registerForm label {
+    width: 30%;
+    float: left;
+}
+
+#registerForm input {
+    width: 60%;
+    float: right;
+}
+
+#registerForm input[type=submit] {
+    margin:auto;
+    width: 100%;
+    float: none;
+}
+
+.loginFlashes {
+    text-align: center;
+    font-family: 'Kanit', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #F0F3FF;
+    font-size: 25px;
+    margin-left: 30px;
+    margin-right: 30px;
+}
+
+.titleRef {
+    color: #15F5BA;
+    font-family: 'Anta', serif;
+}
+
+.registerFlashes {
+    text-align: center;
+    font-family: 'Kanit', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #F0F3FF;
+    font-size: 25px;
+    margin-left: 30px;
+    margin-right: 30px;
+}
+
+#eventsList {
+    width: 80%;
+    margin: auto;
+    text-align: center;
+    display:flex;
+    font-family: 'Kanit', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 18px;
+    color: #F0F3FF;
+}
+
+.event {
+    display:block;
+    width: 18%;
+    max-width: 18%;
+    max-height: 10%;
+    margin-left: 1.25%;
+    margin-right: 1.25%;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #836FFF;
+
+}
+
+.eventInformation {
+    font-family: 'Kanit', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 35px;
+    color: #F0F3FF;
+    width: 80%;
+    margin: auto;
+    text-align: center;
+}
+
+.bookingSeats {
+    color: red;
+}
+
+#bookEventButton {
+    width: 15%;
+    font-size: 25px;
+    font-family: 'Anta', serif;
+    padding: 10px;
+    border-radius: 9px;
+    color: #551A8B;
+    background-color: #836FFF;
+}
+
+#bookEventButton:hover {
+    color:#15F5BA;
+}
+
+#cancelEventButton {
+    width: 14%;
+}
+
+#longUnderline {
+    margin: auto;
+    width: 85%;
+    border-bottom: 3px #F0F3FF solid;
+    border-radius: 3px;
+}
+
+/* FOR THE CREATE EVENT FORM */
+#createEventFormContainer {
+    width: 23%;
+    margin: auto;
+}
+
+#createEventForm {
+    width: 100%;
+    font-family: 'Anta', serif;
+    font-size: 35px;
+    color: #836FFF;
+}
+
+#createEventForm #rows {
+    width: 100%;
+    display: block;
+}
+
+#createEventForm #formGroup {
+    width: 100%;
+    display: inline-block;
+    padding: 10px;
+}
+
+#createEventForm label {
+    width: 50%;
+    float: left;
+}
+
+#createEventForm input {
+    width: 40%;
+    float: right;
+}
+
+#createEventForm input[type=submit] {
+    margin:auto;
+    width: 100%;
+}
+
+/* END OF CREATE EVENT FORM */
+
+/* START OF EVENT BUTTONS */
+
+#standardEventButtons{
+    margin: auto;
+    width: 15%;
+    text-align: center;
+}
+
+#standardEventButtons input {
+    width: 100%;
+}
+
+#adminEventButtons {
+    margin: auto;
+    width: 15%;
+    text-align: center;
+}
+
+#adminEventButtons input {
+    width: 100%;
+}
+
+#eventMessage {
+    color:#F0F3FF;
+    font-size: 25px;
+    font-family: 'Kanit', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    margin: auto;
+    width: 80%;
+    text-align: center;
+}
+
+/* END OF EVENT BUTTONS */

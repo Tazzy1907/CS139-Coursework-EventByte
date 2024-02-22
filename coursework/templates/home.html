@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block heading %}
+    {% if current_user.is_authenticated %}
+        <div class="title subtitle">
+            Welcome, {{ current_user.username }}
+        </div>
+    {% else %}
+        <div class="title">
+            eventbyte
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="loginFlashes">
+            {% for message in messages %}
+            <p> {{ message }} </p>
+            {% endfor %} 
+        </div>
+        {% else %}
+            {% if not current_user.is_authenticated %}
+                <h3 class="standardContent" style="text-align: center; margin-top: 3px;">To book or edit your events, log in or register.</h3>
+            {% else %}
+                <br>
+            {% endif %}
+        {% endif %}
+    {% endwith %}
+
+    {% include "eventList.html" %}
+{% endblock %}
+
+<!-- 
+Stuff that still needs adding.
+
+Almost all of the admin side things - Viewing attendee lists, editing events, etc.
+Accompanying this is the FLASK Mail side of things - Emails should be sent for any changes to events, etc.
+
+JavaScript stuff? Maybe some Fade In and Fade Out for certain pages e.g. the About page.
+
+Drop down menu on My Events to hide certain categories of event?
+
+ADD FORGOTTEN PASSWORD VIA EMAIL ADDRESS.
+When deleting an event, all attendees must be notified. - Email stuff
+Admins can increase or decrease capacity if tickets sold are less than current capacity.
+Admin must be notified when an event is near capacity.
+A text file? - Can view a log of all transactions i.e. date and time that an event is created or destroyed, when capacity for an event changed, etc. including when someone logs in and out.
+
+Attendees can view barcodes for their tickets.
+ -->

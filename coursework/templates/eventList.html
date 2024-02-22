@@ -1,0 +1,33 @@
+<style>
+    a:hover {
+        background-color: #F0F3FF;
+    }
+
+    </style>
+
+<div id="eventsList">
+    {% for event in events %}
+        {% if event.dateTime > currTime %}
+            <div class="event">
+                <a href="/viewEvent?eventid={{event.event_id}}" style="text-decoration: none;"><span class="titleRef" style="font-size: 23px;">{{ event.name }}</span></a><br>
+                <!-- Convert the datetime entity to a readable string. -->
+                {{ event.dateTime.strftime('%A') }} {{ event.dateTime.strftime('%d') }} {{ event.dateTime.strftime('%b') }} {{ event.dateTime.strftime('%Y') }}<br>
+                {{ event.dateTime.strftime('%H') }}:{{ event.dateTime.strftime('%M') }}<br>
+                {{ event.duration }} minutes<br>
+                {{ event.location }}<br>
+                <!-- Check for admin user. -->
+                {% if current_user.userClass == "super" %}
+                    {{ event.capacity }} seats left<br><br>
+                <!-- Check if ticket sare sold out. -->
+                {% elif event.ticketsSold == event.capacity %}
+                    <span style="color: red;"><strong>SOLD OUT</strong></span><br>
+                <!-- Check if 5% or less remaining seats. -->
+                {% elif (event.ticketsSold >= (0.95 * event.capacity)) %}
+                    <span style="color: red;"><strong>TICKETS LOW</strong></span><br>{{event.capacity - event.ticketsSold}} tickets left.<br>
+                {% else %}
+                    <br>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>

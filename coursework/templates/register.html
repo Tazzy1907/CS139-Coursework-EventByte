@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block heading %}
+    <div class="title subtitle">
+        Register
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div id="registerFormContainer">
+        <form action="register" method="post" id="registerForm">
+            <div class="rows">
+                <div class="formGroup">
+                    <p><label for="email">Email</label>
+                        <input type="email" name="email" placeholder="tazzy@hotmail.com"/> </p>
+                </div><br>
+
+                <div class="formGroup">
+                    <p><label for="username">Username</label>
+                    <input type="text" name="username"/> </p>
+                </div><br>
+
+                <div class="formGroup">
+                    <p><label for="password">Password</label>
+                    <input type="password" name="password"/> </p>
+                </div><br>
+
+                <div class="formGroup">
+                    <p><label for="cpassword">Confirm Password</label>
+                        <input type="password" name="cpassword"/> </p>
+                </div>
+            </div><br><br><br>
+            <input type="submit" value="Create Account"/>
+        </form>
+    </div>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="registerFlashes">
+            {% for message in messages %}
+            <p> {{ message }} </p>
+            {% endfor %} 
+        </div>
+        {% endif %}
+    {% endwith %}
+
+{% endblock %}

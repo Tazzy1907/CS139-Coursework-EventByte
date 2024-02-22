@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block heading %}
+    <div class="title subtitle">
+        Admin Page
+    </div>
+{% endblock %}
+
+{% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="loginFlashes">
+            {% for message in messages %}
+            <p> {{ message }} </p>
+            {% endfor %} 
+        </div>
+        {% else %}
+            <br>
+        {% endif %}
+    {% endwith %}
+    {% include "eventList.html" %}
+{% endblock %}

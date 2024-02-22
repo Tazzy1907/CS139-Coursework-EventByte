@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block heading %}
+    <div class="title subtitle">
+        My Events
+    </div>    
+{% endblock %}
+
+{% block content %}
+    <br>
+    <div id="allMyEvents" class="loginFlashes">
+        <div id="upcomingEvents">
+            My Upcoming events
+            <div id="longUnderline"></div><br>
+            {% with events=upcomingEvents %}
+                {% include "eventList.html" %}
+            {% endwith %}
+        </div><br>
+
+        <div id="cancelledEvents">
+            My Cancelled events
+            <div id="longUnderline"></div><br>
+            {% with events=cancelledEvents %}
+                {% include "eventList.html" %}
+            {% endwith %}
+        </div><br>
+
+        <div id="completedEvents">
+            My Completed events
+            <div id="longUnderline"></div><br>
+            {% with events=completedEvents %}
+                {% include "eventList.html" %}
+            {% endwith %}
+        </div><br>
+    </div>
+{% endblock %}

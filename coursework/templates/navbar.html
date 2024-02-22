@@ -1,0 +1,20 @@
+<nav>
+    {% if current_user.userClass == "super" %}
+        <a href="/superHome">All Events</a>
+        <a href="/createEvent">Create Event</a>
+    {% elif current_user.is_authenticated %}
+        <a href="/home">Home Page</a>
+        <a href="/myEvents">My Events</a>
+    {% else %}
+        <a href="/home">Home Page</a>
+    {% endif %}
+    {% if current_user.is_authenticated %}
+        <a href='/logout'>Logout</a>										
+    {% else %}
+        <a href='/login'>Login</a>
+        <a href='/register'>Register</a>
+    {% endif %}
+    <a href="/about">About</a>
+</nav>
+<div id="navunderline">
+</div>
