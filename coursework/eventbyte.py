@@ -137,7 +137,7 @@ def superHome():
         flash("Only admins can access this page.")
         return redirect('/home')
     
-    return render_template('superHome.html', events=Event.query.all())
+    return render_template('superHome.html', events=Event.query.all(), currTime = datetime.datetime.now())
 
 
 # Route to the home page.
@@ -288,21 +288,50 @@ def editEvent():
     # Admins should be able to edit the capacity. They can only edit if the number of tickets sold is less than
     # the capacity.
 
-
-@app.route('/createEvent')
+# Route to create an event. Only accessible to admins.
+@app.route('/createEvent', methods=["GET", "POST"])
 def createEvent():
     if not current_user.is_authenticated or current_user.userClass != "super":
         flash("Only accessible to admins.")
         return redirect('/')
     
     if request.method == "POST":
-        return
+        # Get all form fields. 
+        name = request.form['eventName']
+        date = request.form['eventDate']
+        time = request.form['eventTime']
+        duration = request.form['eventDur']
+        capacity = request.form['eventCap']
+        location = request.form['eventLoc']
+
+        # Create a Python datetime instance.
+        if date == "" or time == "":
+            flash("You cannot have an empty field.")
+            return redirect('/createEvent')
+        else:
+            newDateTime = datetime.datetime.combine(datetime.date(year=int(date[:4]), month=int(date[5:7]), day=int(date[8:])), datetime.time(hour=int(time[:2]), minute=int(time[3:])))
+
+        # Check all fields are valid.
+        if not newEventAuthentication(name, newDateTime, duration, capacity, location):
+            return redirect('/createEvent')
+        
+        # All tests have been passed.
+        try:
+            newEvent = Event(name, newDateTime, int(duration), int(capacity), location)
+            db.session.add(newEvent)
+            db.session.commit()
+        except IntegrityError as err:
+            flash("Could not create event " + str(err))
+            return redirect('/')
+        
+        flash("Event has been succesfully added.")
+        return redirect('/')
     
+    # For non-form website loading.
     if request.method == "GET":
         return render_template("createEvent.html")
 
     
-
 # Route tocurrTime = datetime.datetime.now() to authenticate a new event being added.
 def newEventAuthentication(name, newDateTime, duration, capacity, location):
     # All must be non empty.
@@ -311,7 +340,7 @@ def newEventAuthentication(name, newDateTime, duration, capacity, location):
     # Capacity and duration must be integers.
 
     # Check all fields are non empty.
-    inputNames = ['eventName', 'eventDate', 'eventTime', 'eventDur', 'eventCap', 'eventLoc']
+    inputNames = ['eventName', 'eventDur', 'eventCap', 'eventLoc']
     for name in inputNames:
         if request.form[name] == "":
             flash("You cannot have an empty field")
