@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block heading %}
+    <div class="title subtitle">
+        Event Attendance
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="loginFlashes">
+        <br>
+        Below are the users attending the event <span class="titleRef" style="font-size: 25px;">{{event.name}}</span> on <strong>{{ event.dateTime.strftime('%A') }} {{ event.dateTime.strftime('%d') }} {{ event.dateTime.strftime('%b') }} {{ event.dateTime.strftime('%Y') }}</strong>.
+        <br><br>
+    </div>
+    {% if not attendees.first() %}
+        <div class="loginFlashes">
+            <br>
+            There are no users attending this event yet.
+        </div>
+    {% else %}
+        <div id="attendeeTableContainer">
+            <table id="attendeeTable">
+                <tr>
+                    <th>User ID</th>
+                    <th>Username</th>
+                    <th>User Email</th>
+                    <th>Booking reference</th>
+                </tr>
+                {% for row in attendees %}
+                    <tr>
+                        <td>{{ row.User.user_id }}</td>
+                        <td>{{ row.User.username }}</td>
+                        <td>{{ row.User.email }}</td>
+                        <td>{{ row.booking_ref }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% endif %}
+
+{% endblock %}

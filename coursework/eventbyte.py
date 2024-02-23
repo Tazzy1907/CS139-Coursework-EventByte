@@ -281,6 +281,7 @@ def myEvents():
     completedEvents = db.session.query(Event).join(Ticket, Event.event_id == Ticket.event_id).where(Ticket.user_id == current_user.user_id).where(Ticket.status == "Completed")
     cancelledEvents = db.session.query(Event).join(Ticket, Event.event_id == Ticket.event_id).where(Ticket.user_id == current_user.user_id).where(Ticket.status == "Cancelled")
     upcomingEvents = db.session.query(Event).join(Ticket, Event.event_id == Ticket.event_id).where(Ticket.user_id == current_user.user_id).where(Ticket.status == "Upcoming")
+    
     return render_template('boughtEventsView.html', completedEvents=completedEvents, cancelledEvents=cancelledEvents, upcomingEvents=upcomingEvents, currTime = datetime.datetime(datetime.MINYEAR, 1, 1))
 
 
@@ -339,7 +340,11 @@ def editEvent():
     # Admins should be able to edit the capacity. They can only edit if the number of tickets sold is less than
     # the capacity.
     if request.method == "GET":
-        eventID = request.args.get("eventid")
+        eventID = request.args.get("eventid") or None
+
+        if not eventID:
+            return redirect('/')
+        
         thisEvent = Event.query.filter_by(event_id=eventID).first()
 
         return render_template('editEvent.html', event=thisEvent)
@@ -382,7 +387,44 @@ def editEvent():
 
         return redirect('/')   
 
+
+# Route to view event attendees. Only accessible to admins.
+@app.route('/viewEventAttendees')
+def viewEventAttendees():
+    # Make sure only admins can view this page. 
+    if not current_user.is_authenticated or current_user.userClass != "super":
+        flash("Only accessible to admins.")
+        return redirect('/')
     
+    eventID = request.args.get("eventid") or None
+
+    if not eventID:
+        return redirect('/')
+    
+    # Return the users that match the event_id in the Ticket database table.
+    attendees = db.session.query(User, Ticket.booking_ref).join(Ticket, User.user_id == Ticket.user_id).where(Ticket.event_id == eventID).where(Ticket.status != "Cancelled")
+
+    for row in attendees:
+        print(row)
+
+
+    return render_template("attendeeList.html", attendees=attendees, event=Event.query.filter_by(event_id=eventID).first())
+
+
+# Route to delete an event. Only accessible to admins.
+@app.route('/deleteEvent')
+def deleteEvent():
+    if not current_user.is_authenticated or current_user.userClass != "super":
+        flash("Only accessible to admins.")
+        return redirect('/')
+    
+    eventID = request.args.get("eventid") or None
+
+    if not eventID:
+        return redirect('/')
+
+    # Delete the event.
+
 # Route tocurrTime = datetime.datetime.now() to authenticate a new event being added.
 def newEventAuthentication(name, newDateTime, duration, capacity, location):
     # All must be non empty.

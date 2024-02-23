@@ -17,7 +17,7 @@
                 {{ event.location }}<br>
                 <!-- Check for admin user. -->
                 {% if current_user.userClass == "super" %}
-                    {{ event.capacity }} seats left<br><br>
+                    {{ event.capacity - event.ticketsSold }} seats left<br><br>
                 <!-- Check if ticket sare sold out. -->
                 {% elif event.ticketsSold == event.capacity %}
                     <span style="color: red;"><strong>SOLD OUT</strong></span><br>

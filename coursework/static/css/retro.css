@@ -356,3 +356,41 @@ input[type=submit]:hover {
     background-color: #836FFF;
     color: #15F5BA;
 }
+
+/* The table for viewing attendees */
+#attendeeTableContainer {
+    margin: auto;
+    width: 80%;
+    max-height: 50%;
+    /* border: 5px red solid; */
+    text-align: center;
+}
+
+#attendeeTable {
+    margin: auto;
+    width: 95%;
+    border-collapse: collapse;
+    background-color: #836FFF;
+    font-size: 25px;
+    font-family: 'Kanit', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #F0F3FF;
+}
+
+#attendeeTable, #attendeeTable td {
+    border: 1px solid #F0F3FF;
+}
+
+#attendeeTable th {
+    border: 3px solid #F0F3FF;
+    color: #15F5BA;
+}
+
+
+
+
+
+
+
+/* End of table CSS */
