@@ -49,9 +49,9 @@
                 <!-- Admin access to delete event -->
                 {% else %} 
                     <div id="adminEventButtons">
-                        <a href="/deleteEvent?eventid={{event.event_id}}"><button>Delete Event</button></a>
-                        <a href="/editEvent?eventid={{event.event_id}}"><button>Edit Event</button></a>
-                        <a href="/viewEventAttendees?eventid={{event.event_id}}"><button>View Event Attendees</button></a>
+                        <a href="/editEvent?eventid={{event.event_id}}"><button>Edit Event</button></a><br>
+                        <a href="/deleteEvent?eventid={{event.event_id}}"><button>Delete Event</button></a><br>
+                        <a href="/viewEventAttendees?eventid={{event.event_id}}"><button>View Event Attendees</button></a><br>
                     </div>
                 {% endif %}
             <!-- The event has already taken place. -->

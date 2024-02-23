@@ -200,7 +200,8 @@ def viewEvent():
             upcomingEvent = False
 
         if eventOwned:
-            createBarcode(15)
+            print(getTicket.booking_ref)
+            createBarcode(getTicket.booking_ref)
 
         return render_template('viewEvent.html', event=thisEvent, eventOwned=eventOwned, upcomingEvent=upcomingEvent)
 
@@ -345,11 +346,41 @@ def editEvent():
     
     if request.method == "POST":
         # Validate whether the new capacity is viable.
+        eventID = request.form["eventID"]
+        newCap = request.form["newCapacity"]
+        thisEvent = Event.query.filter_by(event_id=eventID).first()
+        
+        # If the field is left blank.
+        if newCap == "":
+            flash("Please enter a value.")
+            return redirect(f"/editEvent?eventid={eventID}")
+        
+        # Make sure the input is a valid number.
+        try:
+            int(newCap)
+        except ValueError as err:
+            flash("Please enter a valid number.")
+            return redirect(f'/editEvent?eventid={eventID}')
 
-        # If yes, then update the database with the new capacity.
+        # When the new capacity is not a viable number.
+        if int(newCap) < thisEvent.ticketsSold:
+            flash("The new capacity cannot be less than the number of tickets already sold.")
+            return redirect(f'/editEvent?eventid={eventID}')
+        
+        # The new capacity must be at least 10
+        elif int(newCap) < 10:
+            flash("Events cannot have a capacity less than 10.")
+            return redirect(f'/editEvent?eventid={eventID}')
+        # If the number is viable, then update the database.
+        else:
+            try:
+                thisEvent.capacity = int(newCap)
+                db.session.commit()
+                flash("Event has been edited.")
+            except IntegrityError as err:
+                flash("Could not update capacity " + str(err))
 
         return redirect('/')   
-
 
     
 # Route tocurrTime = datetime.datetime.now() to authenticate a new event being added.

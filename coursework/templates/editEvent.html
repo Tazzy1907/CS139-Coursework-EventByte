@@ -17,14 +17,23 @@
     </div>
     <br>
     <div id="editEventFormContainer">
-        <form id="editEventForm">
+        <form id="editEventForm" action="editEvent" method="post">
+            <input type="hidden" name="eventID" value="{{event.event_id}}">
             <label for="newCapacity">Enter new capacity:</label>
             <input type="text" name="newCapacity"><br><br>
             <input type="submit" value="Submit">
         </form>
     </div>
-
+    <br><br><br>
     <div class="loginFlashes">
-
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="loginFlashes">
+                {% for message in messages %}
+                <p> {{ message }} </p>
+                {% endfor %} 
+            </div>
+            {% endif %}
+        {% endwith %}
     </div>
 {% endblock %}

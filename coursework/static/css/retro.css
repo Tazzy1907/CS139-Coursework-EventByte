@@ -338,3 +338,21 @@ input[type=submit]:hover {
 }
 
 /* END OF EVENT BUTTONS */
+
+#adminEventButtons button {
+    padding: 10px;
+    width: 100%;
+    border-radius: 9px;
+    font-size: 25px;
+    font-family: 'Kanit', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #F0F3FF;
+    background: rgba(131, 111, 255, 0.25);
+    margin: 5px;
+}
+
+#adminEventButtons button:hover {
+    background-color: #836FFF;
+    color: #15F5BA;
+}
