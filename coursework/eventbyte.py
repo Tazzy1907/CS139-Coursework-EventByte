@@ -5,6 +5,7 @@ from flask_login import LoginManager, login_user, current_user, logout_user, log
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import update
 import datetime
+from createBarcode import createBarcode
 
 app = Flask(__name__)
 
@@ -197,6 +198,9 @@ def viewEvent():
         else:
             eventOwned = False
             upcomingEvent = False
+
+        if eventOwned:
+            createBarcode(15)
 
         return render_template('viewEvent.html', event=thisEvent, eventOwned=eventOwned, upcomingEvent=upcomingEvent)
 

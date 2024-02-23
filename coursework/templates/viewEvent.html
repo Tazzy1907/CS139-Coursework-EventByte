@@ -32,11 +32,12 @@
                                     <input type="hidden" name="eventID" value="{{event.event_id}}">
                                     <input type="submit" id="bookEventButton" value="Book Ticket">
                                 </form>
-                            {% else %}   
+                            {% else %}
                                 <form action="cancelTicket" method="post">
                                     <input type="hidden" name="eventID" value="{{event.event_id}}">
                                     <input type="submit" id="cancelEventButton" value="Cancel Ticket">
-                                </form>
+                                </form><br>
+                                <img src="../static/images/currBarCode.svg" alt="barcode" style="width: 80%; height: auto;">
                             {% endif %}
                         </div>
                         <br>
