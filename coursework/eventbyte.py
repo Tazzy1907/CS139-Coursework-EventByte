@@ -80,6 +80,7 @@ def register():
         
         # User has been added to the database.
         flash("You have registered successfully, you may now log in")
+        writeAdminLog("register", 0, 0, newUser.user_id)
 
         return redirect('/login')
 
@@ -120,6 +121,7 @@ def logIn():
         
         # Login successful.
         login_user(user)
+        writeAdminLog("logIn", 0, 0, current_user.user_id)
 
         if current_user.userClass == "super":
             return redirect('/superHome')
@@ -160,6 +162,7 @@ def home():
 def logout():
     if current_user.is_authenticated:
         flash('You have successfully logged out')
+        writeAdminLog("logOut", 0, 0, current_user.user_id)
     logout_user()
     return redirect('/login')
 
@@ -224,11 +227,14 @@ def buyTicket():
                 db.session.add(newTicket)
                 db.session.commit()
                 flash(f"Ticket has been successfully bought. Thankyou for your purchase.\nTicket Reference: {newTicket.booking_ref}")
+                writeAdminLog("ticketBought", eventID, newTicket.booking_ref, current_user.user_id)
+
             else:
                 # Ticket exists so update.
                 ticket.status = "Upcoming"
                 db.session.commit()
                 flash(f"Ticket has been successfully bought. Thankyou for your purchase.\nTicket Reference: {ticket.booking_ref}")
+                writeAdminLog("ticketBought", eventID, ticket.booking_ref, current_user.user_id)
 
 
         except IntegrityError as err:
@@ -261,6 +267,7 @@ def cancelTicket():
             flash("Could not cancel ticket " + str(err))
         
         flash("Successfully cancelled event")
+        writeAdminLog("ticketCancelled", eventID, ticket.booking_ref, current_user.user_id)
         return redirect('/home')
     
 
@@ -322,6 +329,7 @@ def createEvent():
             return redirect('/')
         
         flash("Event has been succesfully added.")
+        writeAdminLog("createEvent", newEvent.event_id, 0, current_user.user_id)
         return redirect('/')
     
     # For non-form website loading.
@@ -354,6 +362,7 @@ def editEvent():
         eventID = request.form["eventID"]
         newCap = request.form["newCapacity"]
         thisEvent = Event.query.filter_by(event_id=eventID).first()
+        currCap = thisEvent.capacity
         
         # If the field is left blank.
         if newCap == "":
@@ -382,6 +391,7 @@ def editEvent():
                 thisEvent.capacity = int(newCap)
                 db.session.commit()
                 flash("Event has been edited.")
+                writeAdminLog("editEvent", thisEvent.event_id, 0, current_user.user_id, f"Capacity {newCap} from {currCap}")
             except IntegrityError as err:
                 flash("Could not update capacity " + str(err))
 
@@ -423,7 +433,18 @@ def deleteEvent():
     if not eventID:
         return redirect('/')
 
-    # Delete the event.
+    # Add a confirmation box.
+
+    # First try find the event. If not, redirect to previous page. Also delete all tickets that exist.
+    Event.query.filter_by(event_id = eventID).delete()
+    Ticket.query.filter_by(event_id = eventID).delete()
+
+    db.session.commit()
+
+    flash(f"Event {eventID} has been deleted.")
+    writeAdminLog("deleteEvent", eventID, 0, current_user.user_id)
+    return redirect('/')
+
 
 # Route tocurrTime = datetime.datetime.now() to authenticate a new event being added.
 def newEventAuthentication(name, newDateTime, duration, capacity, location):
@@ -514,4 +535,48 @@ def updateTickets():
                 ticket.status = "Completed"
 
     db.session.commit()
+
+
+# Procedure to write to the admin file.
+def writeAdminLog(eventType, eventID, ticketID, user_id, otherNotes=""):
+    '''
+    Parameters:
+    Type of event - Create / Delete / Buy Ticket / Cancel Ticket / Registration / Login
+    UserID
+    Possibly EventID
+    Possibly TicketID
+    '''
+
+    # Open text file with append.
+    f = open("adminLog.txt", "a")
+
+    # Possible actions to view.
+    if eventType == "logIn":
+        f.write(f"\n|\t LOGIN\t\t|\t {user_id}\t\t|\t N/A\t\t|\t N/A\t\t|\t {datetime.datetime.now()}\t\t|\t NONE\t\t|")
+
+    if eventType == "register":
+        f.write(f"\n|\tREGISTER\t|\t {user_id}\t\t|\t N/A\t\t|\t N/A\t\t|\t {datetime.datetime.now()}\t\t|\t NONE\t\t|")
+
+    if eventType == "logOut":
+        f.write(f"\n|\t LOGOUT\t\t|\t {user_id}\t\t|\t N/A\t\t|\t N/A\t\t|\t {datetime.datetime.now()}\t\t|\t NONE\t\t|")
+
+    if eventType == "createEvent":
+        f.write(f"\n| CREATE EVENT  |\t {user_id}\t\t|\t {eventID}\t\t|\t N/A\t\t|\t {datetime.datetime.now()}\t\t|\t NONE\t\t|")
+
+    if eventType == "deleteEvent":
+        f.write(f"\n| DELETE EVENT  |\t {user_id}\t\t|\t {eventID}\t\t|\t N/A\t\t|\t {datetime.datetime.now()}\t\t|\t NONE\t\t|")
+
+    if eventType == "editEvent":
+        f.write(f"\n|  EDIT EVENT   |\t {user_id}\t\t|\t {eventID}\t\t|\t N/A\t\t|\t {datetime.datetime.now()}\t\t|\t {otherNotes}\t\t|")
+
+    if eventType == "ticketBought":
+        f.write(f"\n| TICKET BOUGHT |\t {user_id}\t\t|\t {eventID}\t\t|\t {ticketID}\t\t|\t {datetime.datetime.now()}\t\t|\t NONE\t\t|")
+
+    if eventType == "ticketCancelled":
+        f.write(f"\n| TICKET CANCEL |\t {user_id}\t\t|\t {eventID}\t\t|\t {ticketID}\t\t|\t {datetime.datetime.now()}\t\t|\t NONE\t\t|")
+
+
+    # Once file has been written to.
+    f.close()
+
 
