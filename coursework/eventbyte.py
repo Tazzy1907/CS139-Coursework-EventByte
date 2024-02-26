@@ -453,6 +453,29 @@ def deleteEvent():
     return redirect('/')
 
 
+# Route to reset password.
+@app.route('/resetPass', methods=["GET", "POST"])
+def resetPass():
+    if request.method == "POST":
+        email = request.form["emailInput"]
+        
+        # Check if the input field is empty.
+        if email == "":
+            flash("Please enter an email.")
+            return redirect('/resetPass')
+        
+        if not resetPassAuthentication(email):
+            return redirect('/resetPass')
+        else:
+            user = User.query.filter_by(email=email).first()
+            sendEmail(RESETPASS=True)
+            return redirect('/login')
+
+    if request.method == "GET":
+        return render_template("resetPass.html")
+
+
+
 # Route tocurrTime = datetime.datetime.now() to authenticate a new event being added.
 def newEventAuthentication(name, newDateTime, duration, capacity, location):
     # All must be non empty.
@@ -526,6 +549,18 @@ def registrationAuthentication(username, email, password, cpassword):
     return True
 
 
+# Function to authenticate an email to reset passwords.
+def resetPassAuthentication(email):
+    foundUser = User.query.filter_by(email=email).first()
+
+    if not foundUser:
+        flash("This email was not found in the database. Please register")
+        return False
+    else:
+        flash("Please check your inbox for a link to reset your password.")
+        return True
+
+
 # Procedure to update all tickets and events to have up-to-date values.
 def updateTickets():
     events = Event.query.all()
@@ -555,23 +590,22 @@ def writeAdminLog(eventType, eventID, ticketID, user_id, otherNotes=""):
     '''
 
     # Open text file with append.
-    f = open("adminLog.txt", "a")
+    f = open("static/adminLog.txt", "a")
 
     # Possible actions to view.
     if eventType == "logIn":
-        f.write(f"\n|\t LOGIN\t\t|\t {user_id}\t\t|\t N/A\t\t|\t N/A\t\t|\t {datetime.datetime.now()}\t\t|\t NONE\t\t|")
-
+        f.write(f"\n|     LOGIN     |\t {user_id}\t\t|\t N/A\t\t|\t N/A\t\t|\t {datetime.datetime.now()}\t\t|\t NONE\t\t|")
     if eventType == "register":
-        f.write(f"\n|\tREGISTER\t|\t {user_id}\t\t|\t N/A\t\t|\t N/A\t\t|\t {datetime.datetime.now()}\t\t|\t NONE\t\t|")
+        f.write(f"\n|    REGISTER   |\t {user_id}\t\t|\t N/A\t\t|\t N/A\t\t|\t {datetime.datetime.now()}\t\t|\t NONE\t\t|")
 
     if eventType == "logOut":
-        f.write(f"\n|\t LOGOUT\t\t|\t {user_id}\t\t|\t N/A\t\t|\t N/A\t\t|\t {datetime.datetime.now()}\t\t|\t NONE\t\t|")
+        f.write(f"\n|    LOGOUT     |\t {user_id}\t\t|\t N/A\t\t|\t N/A\t\t|\t {datetime.datetime.now()}\t\t|\t NONE\t\t|")
 
     if eventType == "createEvent":
-        f.write(f"\n| CREATE EVENT  |\t {user_id}\t\t|\t {eventID}\t\t|\t N/A\t\t|\t {datetime.datetime.now()}\t\t|\t NONE\t\t|")
+        f.write(f"\n|  CREATE EVENT |\t {user_id}\t\t|\t {eventID}\t\t|\t N/A\t\t|\t {datetime.datetime.now()}\t\t|\t NONE\t\t|")
 
     if eventType == "deleteEvent":
-        f.write(f"\n| DELETE EVENT  |\t {user_id}\t\t|\t {eventID}\t\t|\t N/A\t\t|\t {datetime.datetime.now()}\t\t|\t NONE\t\t|")
+        f.write(f"\n|  DELETE EVENT |\t {user_id}\t\t|\t {eventID}\t\t|\t N/A\t\t|\t {datetime.datetime.now()}\t\t|\t NONE\t\t|")
 
     if eventType == "editEvent":
         f.write(f"\n|  EDIT EVENT   |\t {user_id}\t\t|\t {eventID}\t\t|\t N/A\t\t|\t {datetime.datetime.now()}\t\t|\t {otherNotes}\t\t|")
@@ -588,19 +622,24 @@ def writeAdminLog(eventType, eventID, ticketID, user_id, otherNotes=""):
 
 
 # Function to send emails. Returns true once the email has been sent.
-def sendEmail(emailType):
+def sendEmail(REGISTER=False, RESETPASS=False, CANCELLATION=False, EVENTNEARFULL=False, TICKET_BOUGHT=False):
     '''
-    @param emailType - 
-    REGISTER - To verify an email when someone is registering
-    RESETPASS - To reset a forgotten password.
-    CANCELLATION - Attendees need to know if an event they are going to is cancelled.
-    SUPERUSER_EVENTNEARFULL - The superuser needs to emailed when an event is near capacity.
-    TICKET_BOUGHT - An attendee needs to be emailed their ticket once they buy one, along with the barcode.
+    @param 
+        REGISTER - To verify an email when someone is registering
+        RESETPASS - To reset a forgotten password.
+        CANCELLATION - Attendees need to know if an event they are going to is cancelled.
+        SUPERUSER_EVENTNEARFULL - The superuser needs to emailed when an event is near capacity.
+        TICKET_BOUGHT - An attendee needs to be emailed their ticket once they buy one, along with the barcode.
     '''
-    recipients = ["tanlinsir@gmail.com"]
-    sender = f"{os.getlogin()}@dcs.warwick.ac.uk"
-    mail.send_message(sender=("NOREPLY", sender), subject="FLASK-MAIL TEST", body="Testing", recipients=recipients)
-    return True
+    # recipients = ["tanlinsir@gmail.com"]
+    # mail.send_message(sender=("NOREPLY", sender), subject="FLASK-MAIL TEST", body="Testing", recipients=recipients)
+    # return True
 
-    if emailType == "register":
+    sender = f"{os.getlogin()}@dcs.warwick.ac.uk"
+
+    # if emailType == "register":
+
+
+    if RESETPASS:
+        return True
         

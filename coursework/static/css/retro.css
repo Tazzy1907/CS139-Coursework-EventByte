@@ -386,11 +386,27 @@ input[type=submit]:hover {
     border: 3px solid #F0F3FF;
     color: #15F5BA;
 }
-
-
-
-
-
-
-
 /* End of table CSS */
+
+/* Reset Password Form CSS */
+
+#resetPassContainer {
+    margin: auto;
+    width: 50%; 
+    text-align: center;
+    font-family: 'Anta', serif;
+    font-size: 25px;
+    color: #F0F3FF;
+}
+/* End of form */
+
+#resetPassForm {
+    width: 100%;
+    font-family: 'Anta', serif;
+    font-size: 35px;
+    color: #836FFF;
+}
+
+#resetPassForm input[type=submit]{
+    width: 50%;
+}

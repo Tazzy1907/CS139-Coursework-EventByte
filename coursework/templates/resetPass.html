@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block heading %}
+    <div class="title subtitle">
+        Reset Password
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div id="resetPassContainer">
+        <br>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %} 
+            {% else %}
+                Enter your email below to recieve a link to reset your password.        
+            {% endif %}
+        {% endwith %}
+        <br>
+        <form action="resetPass" id="resetPassForm" method="post">
+            <div class="rows">
+                <div class="formGroup">
+                    <p><label for="email">Email</label> 
+                        <input type="email" name="emailInput"></p>
+                </div>
+            </div>
+            <input type="submit" value="Reset Password">
+        </form>
+    </div>
+{% endblock %}
