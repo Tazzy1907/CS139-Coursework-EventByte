@@ -2,7 +2,7 @@
     {% if current_user.userClass == "super" %}
         <a href="/superHome">All Events</a>
         <a href="/createEvent">Create Event</a>
-        <a href="/viewLog">View Admin Log</a>
+        <a href="../static/adminLog.txt" download="adminLog.txt">View Admin Log</a>
     {% elif current_user.is_authenticated %}
         <a href="/home">Home Page</a>
         <a href="/myEvents">My Events</a>

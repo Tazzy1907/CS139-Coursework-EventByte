@@ -5,11 +5,17 @@ from flask_login import LoginManager, login_user, current_user, logout_user, log
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import update
 import datetime
+from flask_mail import Mail
 from createBarcode import createBarcode
+import os
 
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'tazzy'
+
+# Regarding the mail functions.
+app.config['MAIL_SUPPRESS_SEND'] = True
+mail = Mail(app)
 
 # USE @LOGIN_REQUIRED ABOVE ANY ROUTE TO MAKE IT ACCESSIBLE ONLY TO LOGIN USERS.
 # https://flask-login.readthedocs.io/en/latest/#flask_login.LoginManager.login_view
@@ -121,6 +127,7 @@ def logIn():
         
         # Login successful.
         login_user(user)
+        sendEmail("Test")
         writeAdminLog("logIn", 0, 0, current_user.user_id)
 
         if current_user.userClass == "super":
@@ -580,3 +587,20 @@ def writeAdminLog(eventType, eventID, ticketID, user_id, otherNotes=""):
     f.close()
 
 
+# Function to send emails. Returns true once the email has been sent.
+def sendEmail(emailType):
+    '''
+    @param emailType - 
+    REGISTER - To verify an email when someone is registering
+    RESETPASS - To reset a forgotten password.
+    CANCELLATION - Attendees need to know if an event they are going to is cancelled.
+    SUPERUSER_EVENTNEARFULL - The superuser needs to emailed when an event is near capacity.
+    TICKET_BOUGHT - An attendee needs to be emailed their ticket once they buy one, along with the barcode.
+    '''
+    recipients = ["tanlinsir@gmail.com"]
+    sender = f"{os.getlogin()}@dcs.warwick.ac.uk"
+    mail.send_message(sender=("NOREPLY", sender), subject="FLASK-MAIL TEST", body="Testing", recipients=recipients)
+    return True
+
+    if emailType == "register":
+        
