@@ -3,7 +3,7 @@ from typing import List
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from werkzeug import security
-# from sqlalchemy.orm import Mapped
+
 
 # Create the database interface.
 db = SQLAlchemy()
@@ -25,7 +25,6 @@ class User(UserMixin, db.Model):
 
     def get_id(self):
         return self.user_id
-
 
 # Create the Event model.
 class Event(db.Model):

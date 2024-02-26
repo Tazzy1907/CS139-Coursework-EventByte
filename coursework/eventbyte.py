@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash, session, redirect, request
+from flask import Flask, render_template, flash, session, redirect, request, url_for
 from db_definition import db, User, Event, Ticket, dbInit
 from werkzeug import security
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
@@ -8,13 +8,14 @@ import datetime
 from flask_mail import Mail
 from createBarcode import createBarcode
 import os
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'tazzy'
 
 # Regarding the mail functions.
-app.config['MAIL_SUPPRESS_SEND'] = True
+app.config['MAIL_SUPPRESS_SEND'] = False
 mail = Mail(app)
 
 # USE @LOGIN_REQUIRED ABOVE ANY ROUTE TO MAKE IT ACCESSIBLE ONLY TO LOGIN USERS.
@@ -421,10 +422,6 @@ def viewEventAttendees():
     # Return the users that match the event_id in the Ticket database table.
     attendees = db.session.query(User, Ticket.booking_ref).join(Ticket, User.user_id == Ticket.user_id).where(Ticket.event_id == eventID).where(Ticket.status != "Cancelled")
 
-    for row in attendees:
-        print(row)
-
-
     return render_template("attendeeList.html", attendees=attendees, event=Event.query.filter_by(event_id=eventID).first())
 
 
@@ -468,14 +465,67 @@ def resetPass():
             return redirect('/resetPass')
         else:
             user = User.query.filter_by(email=email).first()
-            sendEmail(RESETPASS=True)
+            sendEmail(user=user, RESETPASS=True)
             return redirect('/login')
 
     if request.method == "GET":
         return render_template("resetPass.html")
 
 
+# Route for requested password resets.
+@app.route('/requestedPasswordReset/<email>/<token>', methods=["POST", "GET"])
+def requestedPasswordReset(email, token):
 
+    # Someone has arrived here through a reset password link.
+    if request.method == "GET":
+        # Make sure the user isn't already logged in.
+        if current_user.is_authenticated:
+            return redirect('/home')
+
+        # Find the associated user with this email.
+        user = User.query.filter_by(email=email)
+
+        # Then, check if the token is the same one.
+
+        # The token has either expired or is invalid.
+        if not verifyResetToken(user, token):
+            flash("Your token is invalid or expired.")
+            return redirect('/resetPass')
+        # The token is valid, so we can allow the user to choose a new password.
+        else:
+            return render_template('newPassword.html', email=email)
+        
+    # The form to reset the password has been submitted.
+    
+    if request.method == "POST":
+        formEmail = request.form["email"]
+        password = request.form['password']
+        cPassword = request.form['cPassword']
+
+        if (password == "") or (cPassword == ""):
+            flash("Please enter a valid password.")
+            return render_template('newPassword.html')
+        elif password != cPassword:
+            flash("Your passwords don't match.")
+            return render_template('newPassword.html', formEmail=formEmail)
+        
+        # Password has passed validation, so password can be changed.
+        user = User.query.filter_by(email = formEmail).first()
+        user.hashedPass = security.generate_password_hash(password)
+        db.session.commit()
+
+        writeAdminLog("passwordChange", 0, 0, user.user_id)
+
+        flash("Your password has been changed.")
+        return redirect('/')   
+
+
+
+
+# --------------------------------------------------------------------------------
+# AUTHENTICATION FUNCTIONS
+# --------------------------------------------------------------------------------
+    
 # Route tocurrTime = datetime.datetime.now() to authenticate a new event being added.
 def newEventAuthentication(name, newDateTime, duration, capacity, location):
     # All must be non empty.
@@ -616,13 +666,28 @@ def writeAdminLog(eventType, eventID, ticketID, user_id, otherNotes=""):
     if eventType == "ticketCancelled":
         f.write(f"\n| TICKET CANCEL |\t {user_id}\t\t|\t {eventID}\t\t|\t {ticketID}\t\t|\t {datetime.datetime.now()}\t\t|\t NONE\t\t|")
 
+    if eventType == "passwordChange":
+        f.write(f"\n| PASSWORDCHANGE |\t {user_id}\t\t|\t N/A\t\t|\t N/A\t\t|\t {datetime.datetime.now()}\t\t|\t NONE\t\t|")
+
 
     # Once file has been written to.
     f.close()
 
+def createResetToken(user, expires_sec = 1800):
+    s = Serializer(app.config['SECRET_KEY'], expires_sec)
+    return s.dumps({'user_id': user.user_id}).decode('utf-8')
+
+def verifyResetToken(user, token):
+    s = Serializer(app.config['SECRET_KEY'])
+    try:
+        user_id = s.loads(token)['user_id']
+    except:
+        return False
+    return True
+
 
 # Function to send emails. Returns true once the email has been sent.
-def sendEmail(REGISTER=False, RESETPASS=False, CANCELLATION=False, EVENTNEARFULL=False, TICKET_BOUGHT=False):
+def sendEmail(user=None, REGISTER=False, RESETPASS=False, CANCELLATION=False, EVENTNEARFULL=False, TICKET_BOUGHT=False):
     '''
     @param 
         REGISTER - To verify an email when someone is registering
@@ -641,5 +706,16 @@ def sendEmail(REGISTER=False, RESETPASS=False, CANCELLATION=False, EVENTNEARFULL
 
 
     if RESETPASS:
-        return True
+        token = createResetToken(user)
+        recipients = [user.email]
+        mail.send_message(sender=("NOREPLY", sender),
+                          subject="Forgotten Password Reset Link",
+                          body=f'''Click the below link to reset your password.
+{url_for('requestedPasswordReset', token=token, email=user.email, _external=True)}
+If you haven't requested a password link, please ignore this email.
+- EVENTBYTE''',
+                          recipients=recipients)
+        
+    
+
         
