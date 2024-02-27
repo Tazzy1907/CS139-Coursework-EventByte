@@ -49,6 +49,7 @@ if resetDB:
 # For when someone only loads the first part of the URL. Take to home page if logged in, if not then ask to log in.
 @app.route('/')
 def index():
+    updateTickets()
     if current_user.is_authenticated:
         return redirect('/home')
     else:
@@ -136,6 +137,7 @@ def registerConfirmation(name, email, hash, token):
 # Route to the login page.
 @app.route('/login', methods=['GET', 'POST'])
 def logIn():
+    updateTickets()
 
     # User is already logged in, go straight to the home page.
     if current_user.is_authenticated:
@@ -165,7 +167,6 @@ def logIn():
         
         # Login successful.
         login_user(user)
-        sendEmail("Test")
         writeAdminLog("logIn", 0, 0, current_user.user_id)
 
         if current_user.userClass == "super":
@@ -667,6 +668,10 @@ def updateTickets():
         # Update all events to record the number of tickets that have been sold.
         ticketNum = db.session.query(Ticket).where(Ticket.event_id == event.event_id, Ticket.status == "Upcoming").count()
         event.ticketsSold = ticketNum
+
+        # If the event is near capacity, notify the admin via email. 
+        if event.ticketsSold >= (0.95 * event.capacity):
+            sendEmail(user=User.query.filter_by(userClass="super").first(), event=event, EVENTNEARFULL=True)
         
         # Update all tickets so that if they're past the current date / time, they become "Completed" events.
         if event.dateTime <= datetime.datetime.now():
@@ -795,7 +800,6 @@ The EVENTBYTE team''',
             return False
         
     if TICKET_BOUGHT:
-        print(f"User is {user.username}. Event is {event.name}")
         # Need to send an email with the event id, the user, and the bar code attached.
         recipients = [user.email]
         msg = Message(sender=("NOREPLY", sender), subject=f"Ticket Purchase Confirmation: {event.name}", recipients=recipients) 
@@ -808,6 +812,18 @@ The barcode can also be accessed on the EVENTBYTE website after signing in.
 
 Thanks,
 The EVENTBYTE team'''
+        mail.send(msg)
+        return True
+    
+
+    if EVENTNEARFULL:
+        recipients = [user.email]
+        msg = Message(sender=("NOREPLY", sender), subject=f"Event Near Capacity: {event.name}", recipients=recipients)
+        msg.body = f''' Hi {user.username}, the event {event.name} with ID {event.event_id} is nearing capacity.
+{event.ticketsSold} of the {event.capacity} tickets have sold.
+
+Thanks,
+The EVENTBYTE team.'''
         mail.send(msg)
         return True
 

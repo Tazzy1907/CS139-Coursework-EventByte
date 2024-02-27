@@ -64,7 +64,7 @@ class Ticket(db.Model):
 
 def dbInit():
     # Add the super user to the database.
-    db.session.add(User("super", "super@super.com", security.generate_password_hash("adminPassword"), "super"))
+    db.session.add(User("super", "taz.siriwardena@warwick.ac.uk", security.generate_password_hash("adminPassword"), "super"))
     db.session.add(User("tazzy", "tanlinsir@gmail.com", security.generate_password_hash("taz")))
     db.session.add(Event("CompCafe", datetime(2024, 5, 5, 20, 30, 5), 240, 500, "CS0.06"))
     db.session.add(Event("Careers Fair", datetime(2024, 5, 5, 20, 30, 5), 360, 800, "Rootes Building"))
