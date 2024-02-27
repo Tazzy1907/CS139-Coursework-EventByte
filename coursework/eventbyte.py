@@ -38,7 +38,7 @@ def loadUser(user_id):
     return User.query.get(int(user_id))
 
 # True resets the database everytime the app is restarted.
-resetDB = False
+resetDB = True
 if resetDB:
     with app.app_context():
         # Delete (drop) everything, re-create the tables, then put some data into the tables using dbInit.
@@ -271,6 +271,7 @@ def buyTicket():
                 db.session.add(newTicket)
                 db.session.commit()
                 flash(f"Ticket has been successfully bought. Thankyou for your purchase.\nTicket Reference: {newTicket.booking_ref}")
+                sendEmail(user=current_user, event=event, TICKET_BOUGHT=True)
                 writeAdminLog("ticketBought", eventID, newTicket.booking_ref, current_user.user_id)
 
             else:
