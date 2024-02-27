@@ -64,6 +64,7 @@ def register():
     if current_user.is_authenticated:
         return redirect('/home')
 
+    # The register form has been submitted.
     if request.method == "POST":
         email = request.form['email']
         name = request.form['username']
@@ -87,7 +88,7 @@ def register():
     if request.method == "GET":
         return render_template('register.html')
 
-
+# Similar to the functions for creation and verification of password reset tokens. These are to validate emails. 
 def createRegisterToken(email, expires_sec = 1800):
     s = Serializer(app.config['SECRET_KEY'], expires_sec)
     return s.dumps({"email": email}).decode('utf-8')
@@ -102,7 +103,7 @@ def verifyRegisterToken(email, token):
     return True
 
 
-
+# The route for when a user has clicked the link that has been sent to their email to reset their password.
 @app.route("/registerConfirmation/<name>/<email>/<hash>/<token>", methods=["POST", "GET"])
 def registerConfirmation(name, email, hash, token):
     
@@ -191,15 +192,11 @@ def superHome():
     return render_template('superHome.html', events=Event.query.all(), currTime = datetime.datetime.now())
 
 
-# Route to the home page.
+# Route to the home page. All events can be viewed here.
 @app.route('/home')
 def home():
-
     updateTickets()
     events=Event.query.all()
-
-    # NEED TO CHECK IF AN EVENT IS OWNED BY THE USER.
-
     return render_template('home.html', events=events, currTime = datetime.datetime.now())
 
 
@@ -318,7 +315,6 @@ def cancelTicket():
         writeAdminLog("ticketCancelled", eventID, ticket.booking_ref, current_user.user_id)
         return redirect('/home')
     
-
     if request.method == "GET":
         return redirect('/')
 
@@ -545,7 +541,6 @@ def requestedPasswordReset(email, token):
             return render_template('newPassword.html', email=email)
         
     # The form to reset the password has been submitted.
-    
     if request.method == "POST":
         formEmail = request.form["email"]
         password = request.form['password']
@@ -726,10 +721,12 @@ def writeAdminLog(eventType, eventID, ticketID, user_id, otherNotes=""):
     # Once file has been written to.
     f.close()
 
+# Functions regarding the generation of a password reset token. This function creates the token.
 def createResetToken(user, expires_sec = 1800):
     s = Serializer(app.config['SECRET_KEY'], expires_sec)
     return s.dumps({'user_id': user.user_id}).decode('utf-8')
 
+# This function verifies the token to not be expired / invalid.
 def verifyResetToken(user, token):
     s = Serializer(app.config['SECRET_KEY'])
     try:
