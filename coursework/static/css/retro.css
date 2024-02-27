@@ -173,7 +173,7 @@ input[type=submit]:hover {
     margin-right: 30px;
 }
 
-#eventsList {
+.eventsList {
     width: 80%;
     margin: auto;
     text-align: center;

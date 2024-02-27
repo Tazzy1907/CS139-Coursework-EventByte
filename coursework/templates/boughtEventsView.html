@@ -9,28 +9,37 @@
 {% block content %}
     <br>
     <div id="allMyEvents" class="loginFlashes">
+        
+        <div class="eventSecTitle" id="upcoming">
+            My Upcoming Events
+        </div>
+        <div id="longUnderline"></div><br>
         <div id="upcomingEvents">
-            My Upcoming events
-            <div id="longUnderline"></div><br>
             {% with events=upcomingEvents %}
                 {% include "eventList.html" %}
             {% endwith %}
         </div><br>
 
+        <div class="eventSecTitle" id="cancelled">
+            My Cancelled Events
+        </div>
+        <div id="longUnderline"></div><br>
         <div id="cancelledEvents">
-            My Cancelled events
-            <div id="longUnderline"></div><br>
             {% with events=cancelledEvents %}
                 {% include "eventList.html" %}
             {% endwith %}
         </div><br>
 
+        <div class="eventSecTitle" id="completed">
+            My Completed Events
+        </div>
+        <div id="longUnderline"></div><br>
         <div id="completedEvents">
-            My Completed events
-            <div id="longUnderline"></div><br>
             {% with events=completedEvents %}
                 {% include "eventList.html" %}
             {% endwith %}
         </div><br>
     </div>
+    <script src='/static/js/boughtEventsView.js'></script>
 {% endblock %}
+
