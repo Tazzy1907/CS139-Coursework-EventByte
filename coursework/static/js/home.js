@@ -1,3 +1,5 @@
+
+// Fade in all event items.
 $(document).ready(function() {
     var events = $(".eventsList").children(); 
     events.hide();

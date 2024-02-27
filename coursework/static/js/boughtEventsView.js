@@ -1,3 +1,4 @@
+// Fade in all event elements.
 $(document).ready(function() {
     var events = $(".eventsList").children(); 
     events.hide();
@@ -8,6 +9,7 @@ $(document).ready(function() {
 });
 
 
+// Hide certain sections of purchased / finished events.
 $('#upcoming').click(function() {
     $('#upcomingEvents').slideToggle("slow");
 })

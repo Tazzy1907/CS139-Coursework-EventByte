@@ -10,9 +10,7 @@
     <br>
     <div id="allMyEvents" class="loginFlashes">
         
-        <div class="eventSecTitle" id="upcoming">
-            My Upcoming Events
-        </div>
+        <button class="eventSecTitle" id="upcoming">My Upcoming Events</button>
         <div id="longUnderline"></div><br>
         <div id="upcomingEvents">
             {% with events=upcomingEvents %}
@@ -20,9 +18,7 @@
             {% endwith %}
         </div><br>
 
-        <div class="eventSecTitle" id="cancelled">
-            My Cancelled Events
-        </div>
+        <button class="eventSecTitle" id="cancelled">My Cancelled Events</button>
         <div id="longUnderline"></div><br>
         <div id="cancelledEvents">
             {% with events=cancelledEvents %}
@@ -30,9 +26,7 @@
             {% endwith %}
         </div><br>
 
-        <div class="eventSecTitle" id="completed">
-            My Completed Events
-        </div>
+        <button class="eventSecTitle" id="completed">My Completed Events</button>
         <div id="longUnderline"></div><br>
         <div id="completedEvents">
             {% with events=completedEvents %}

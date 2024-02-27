@@ -422,3 +422,9 @@ input[type=submit]:hover {
 .eventSecTitle:hover{
     color:#15F5BA;
 }
+
+.eventSecTitle {
+    background: none;
+    border: none;
+    color:#F0F3FF;
+}
