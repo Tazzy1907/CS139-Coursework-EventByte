@@ -66,17 +66,36 @@ def dbInit():
     # Add the super user to the database.
     db.session.add(User("super", "taz.siriwardena@warwick.ac.uk", security.generate_password_hash("adminPassword"), "super"))
     db.session.add(User("tazzy", "tanlinsir@gmail.com", security.generate_password_hash("taz")))
-    db.session.add(Event("CompCafe", datetime(2024, 5, 5, 20, 30, 5), 240, 500, "CS0.06"))
-    db.session.add(Event("Careers Fair", datetime(2024, 5, 5, 20, 30, 5), 360, 800, "Rootes Building"))
-    db.session.add(Event("Xmas Social", datetime(2023, 5, 5, 20, 30, 5), 90, 300, "Department of Computer Science"))
-    db.session.add(Event("Circling", datetime(2024, 5, 5, 20, 30, 5), 120, 300, "Assembly, Leamington"))
-    db.session.add(Event("Lightning Talk", datetime(2024, 5, 5, 20, 30, 5), 60, 300, "MS1.13"))
+
+    # Test data for events.
+    db.session.add(Event("CompCafe 1", datetime(2024, 5, 5, 20, 30, 5), 240, 500, "CS0.06"))
+    db.session.add(Event("Careers Fair 1", datetime(2024, 5, 6, 20, 30, 5), 360, 800, "Rootes Building"))
+    db.session.add(Event("Xmas Social 1", datetime(2023, 5, 7, 20, 30, 5), 90, 300, "Department of Computer Science"))
+    db.session.add(Event("Circling 1", datetime(2024, 5, 5, 20, 30, 5), 120, 300, "Assembly, Leamington"))
+    db.session.add(Event("Lightning Talk 1", datetime(2024, 5, 21, 20, 30, 5), 60, 300, "MS1.13"))
+    db.session.add(Event("CompCafe 2", datetime(2024, 5, 5, 23, 30, 5), 240, 500, "CS0.06"))
+    db.session.add(Event("Careers Fair 2", datetime(2024, 5, 5  , 20, 30, 5), 360, 800, "Rootes Building"))
+    db.session.add(Event("Circling 2", datetime(2024, 5, 13, 20, 30, 5), 120, 300, "Assembly, Leamington"))
+    db.session.add(Event("Lightning Talk 2", datetime(2024, 5, 5, 20, 30, 5), 60, 300, "MS1.13"))
+    db.session.add(Event("CompCafe 3", datetime(2024, 5, 5, 20, 30, 5), 240, 500, "CS0.06"))
+    db.session.add(Event("Careers Fair 3", datetime(2024, 5, 5, 20, 30, 5), 360, 800, "Rootes Building"))
+    db.session.add(Event("Circling 3", datetime(2024, 5, 5, 20, 30, 5), 120, 300, "Assembly, Leamington"))
+    db.session.add(Event("Lightning Talk 3", datetime(2024, 5, 5, 20, 30, 5), 60, 300, "MS1.13"))
+    db.session.add(Event("CompCafe 4", datetime(2024, 5, 5, 20, 30, 5), 240, 500, "CS0.06"))
+    db.session.add(Event("Careers Fair 4", datetime(2024, 5, 5, 20, 30, 5), 360, 800, "Rootes Building"))
+    db.session.add(Event("Circling 4", datetime(2024, 5, 5, 20, 30, 5), 120, 300, "Assembly, Leamington"))
+    db.session.add(Event("Lightning Talk 4", datetime(2024, 5, 5, 20, 30, 5), 60, 300, "MS1.13"))
+    db.session.add(Event("CompCafe 5", datetime(2024, 5, 5, 20, 30, 5), 240, 500, "CS0.06"))
+    db.session.add(Event("Careers Fair 5", datetime(2024, 5, 5, 20, 30, 5), 360, 800, "Rootes Building"))
+    db.session.add(Event("Xmas Social 5", datetime(2023, 5, 5, 20, 30, 5), 90, 300, "Department of Computer Science"))
+
 
     # Add an example link between the first event and the super-user.
-    db.session.add(Ticket(User.query.filter_by(username="tazzy").first().user_id, Event.query.filter_by(name="CompCafe").first().event_id, "Upcoming"))
-    db.session.add(Ticket(User.query.filter_by(username="tazzy").first().user_id, Event.query.filter_by(name="Careers Fair").first().event_id, "Cancelled"))
-    db.session.add(Ticket(User.query.filter_by(username="tazzy").first().user_id, Event.query.filter_by(name="Xmas Social").first().event_id, "Upcoming"))
-    db.session.add(Ticket(User.query.filter_by(username="tazzy").first().user_id, Event.query.filter_by(name="Lightning Talk").first().event_id, "Upcoming"))
+    db.session.add(Ticket(User.query.filter_by(username="tazzy").first().user_id, Event.query.filter_by(name="CompCafe 1").first().event_id, "Upcoming"))
+    db.session.add(Ticket(User.query.filter_by(username="tazzy").first().user_id, Event.query.filter_by(name="Careers Fair 1").first().event_id, "Cancelled"))
+    db.session.add(Ticket(User.query.filter_by(username="tazzy").first().user_id, Event.query.filter_by(name="Xmas Social 1").first().event_id, "Upcoming"))
+    db.session.add(Ticket(User.query.filter_by(username="tazzy").first().user_id, Event.query.filter_by(name="Lightning Talk 1").first().event_id, "Upcoming"))
+    
 
     # Commit all changes to the database file.
     db.session.commit()

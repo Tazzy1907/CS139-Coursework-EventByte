@@ -1,9 +1,11 @@
 <style>
     a:hover {
         background-color: #F0F3FF;
+        border-radius:3px;
+        padding-left: 10px;
+        padding-right: 10px;
     }
-
-    </style>
+</style>
 
 <div class="eventsList">
     {% for event in events %}
@@ -31,3 +33,5 @@
         {% endif %}
     {% endfor %}
 </div>
+
+<script src="../static/js/eventList.js"></script>

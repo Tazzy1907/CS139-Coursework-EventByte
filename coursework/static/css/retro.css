@@ -46,6 +46,11 @@ nav a:hover {
     color: #15F5BA;
     border-radius: 5px;
     text-align: center;
+    position: relative;
+}
+
+#mainTitle {
+    left: 0px;
 }
 
 /* All subtitle elements inherit the title class. */
@@ -173,7 +178,7 @@ input[type=submit]:hover {
     margin-right: 30px;
 }
 
-.eventsList {
+/* .eventsList {
     width: 80%;
     margin: auto;
     text-align: center;
@@ -183,18 +188,33 @@ input[type=submit]:hover {
     font-style: normal;
     font-size: 18px;
     color: #F0F3FF;
+} */
+
+.eventsList {
+    display: grid;
+    grid-gap: 30px;
+    justify-content: center;
+    grid-template-columns: repeat(4, calc(25% - 30px));
+    width: 80%;
+    margin: auto;
+    text-align: center;
+    font-family: 'Kanit', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 18px;
+    color: #F0F3FF;
+
 }
+
 
 .event {
     display:block;
-    width: 18%;
-    max-width: 18%;
-    max-height: 10%;
     margin-left: 1.25%;
     margin-right: 1.25%;
-    padding: 5px;
+    padding: 10px;
     border-radius: 5px;
     background-color: #836FFF;
+    margin: 0;
 
 }
 
@@ -409,4 +429,8 @@ input[type=submit]:hover {
 
 #resetPassForm input[type=submit]{
     width: 50%;
+}
+
+.eventSecTitle:hover{
+    color:#15F5BA;
 }

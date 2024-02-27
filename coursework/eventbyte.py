@@ -38,7 +38,7 @@ def loadUser(user_id):
     return User.query.get(int(user_id))
 
 # True resets the database everytime the app is restarted.
-resetDB = True
+resetDB = False
 if resetDB:
     with app.app_context():
         # Delete (drop) everything, re-create the tables, then put some data into the tables using dbInit.
@@ -783,8 +783,6 @@ The EVENTBYTE team''',
     if CANCELLATION:
         # Get all users who are attending
         recipients = [email for email, in event["recipients"]]
-        print("Recipients are", recipients)
-        print(len(recipients))
         if not recipients == []:
             mail.send_message(sender=("NOREPLY", sender),
                             subject=f"EVENT CANCELLED: {event['name']}",
