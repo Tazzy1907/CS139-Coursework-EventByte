@@ -5,7 +5,7 @@ from flask_login import LoginManager, login_user, current_user, logout_user, log
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import update
 import datetime
-from flask_mail import Mail
+from flask_mail import Mail, Message
 from createBarcode import createBarcode
 import os
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
@@ -262,6 +262,7 @@ def buyTicket():
 
         if not eventID:
             return redirect('/')
+        event = Event.query.filter_by(event_id=eventID).first()
         
         # Check whether the ticket already exists in the database.
         try:
@@ -279,6 +280,7 @@ def buyTicket():
                 ticket.status = "Upcoming"
                 db.session.commit()
                 flash(f"Ticket has been successfully bought. Thankyou for your purchase.\nTicket Reference: {ticket.booking_ref}")
+                sendEmail(user=current_user, event=event, TICKET_BOUGHT=True)
                 writeAdminLog("ticketBought", eventID, ticket.booking_ref, current_user.user_id)
 
 
@@ -753,7 +755,8 @@ def sendEmail(user=None, event=None, REGISTER=False, RESETPASS=False, CANCELLATI
                           body=f'''Click the below link to reset your password.
 {url_for('requestedPasswordReset', token=token, email=user.email, _external=True)}
 If you haven't requested a password link, please ignore this email.
-- EVENTBYTE''',
+
+The EVENTBYTE team''',
                           recipients=recipients)
         return True
         
@@ -766,7 +769,9 @@ If you haven't requested a password link, please ignore this email.
                           body=f'''Click the below link to confirm your registration to the EVENTBYTE service.
 {url_for('registerConfirmation', name=user["username"], hash=user["password"], token=token, email=user["email"], _external=True)}
 If you haven't tried to register to EVENTBYTE, please ignore this email.
-- EVENTBYTE''',
+
+
+The EVENTBYTE team''',
                            recipients=recipients)
         return True
     
@@ -790,13 +795,21 @@ The EVENTBYTE team''',
             return False
         
     if TICKET_BOUGHT:
+        print(f"User is {user.username}. Event is {event.name}")
         # Need to send an email with the event id, the user, and the bar code attached.
         recipients = [user.email]
-        mail.send_message(sender=("NOREPLY", sender),
-                          subject=f"Ticket Purchase Confirmation: {event.name}",
-                          body=f''' Hi {user.username}
+        msg = Message(sender=("NOREPLY", sender), subject=f"Ticket Purchase Confirmation: {event.name}", recipients=recipients) 
+        with app.open_resource("static/images/currBarCode.svg") as fp:
+            msg.attach("static/images/currBarCode.svg", "application/octet-stream", fp.read())
+        msg.body = f''' Hi {user.username}, thank you for your purchase on EVENTBYTE to attend {event.name}. We look forward to seeing you there.
+Attached is the barcode which you'll need for entry to the event. You may also be required to have some sort of identification for 18+ events.
 
-'''
+The barcode can also be accessed on the EVENTBYTE website after signing in.
+
+Thanks,
+The EVENTBYTE team'''
+        mail.send(msg)
+        return True
 
 
 
