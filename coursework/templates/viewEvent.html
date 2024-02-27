@@ -15,7 +15,7 @@
         {{ event.duration }} minutes<br>
         {{ event.location }}<br>
         {% if current_user.userClass == "super" %}
-            {{ event.capacity }} seats left<br><br>
+            {{ event.capacity - event.ticketsSold }} seats left<br><br>
         {% else %}
             <br>
         {% endif %}

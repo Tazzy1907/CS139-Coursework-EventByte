@@ -221,6 +221,7 @@ def about():
 # View an event in more depth from the home page.
 @app.route('/viewEvent')
 def viewEvent():
+    updateTickets()
     eventID = request.args.get('eventid') or None
     if not eventID:
         return redirect('/')
@@ -248,7 +249,6 @@ def viewEvent():
             upcomingEvent = False
 
         if eventOwned:
-            print(getTicket.booking_ref)
             createBarcode(getTicket.booking_ref)
 
         return render_template('viewEvent.html', event=thisEvent, eventOwned=eventOwned, upcomingEvent=upcomingEvent)
@@ -469,14 +469,19 @@ def deleteEvent():
         flash("Only accessible to admins.")
         return redirect('/')
     
+    # First try find the event. If not, redirect to previous page.
     eventID = request.args.get("eventid") or None
 
     if not eventID:
         return redirect('/')
 
-    # Add a confirmation box.
+    # Create a copy of the event to send in the email.
+    event = Event.query.filter_by(event_id=eventID).first()
+    recipients = db.session.query(User.email).join(Ticket, User.user_id == Ticket.user_id).where(Ticket.event_id == event.event_id).where(Ticket.status != "Cancelled").all()
 
-    # First try find the event. If not, redirect to previous page. Also delete all tickets that exist.
+    currEvent = {"id": event.event_id, "name": event.name, "datetime": event.dateTime, "recipients": recipients}
+
+    # Delete event and all tickets that exist.
     Event.query.filter_by(event_id = eventID).delete()
     Ticket.query.filter_by(event_id = eventID).delete()
 
@@ -484,6 +489,9 @@ def deleteEvent():
 
     flash(f"Event {eventID} has been deleted.")
     writeAdminLog("deleteEvent", eventID, 0, current_user.user_id)
+
+    # Send an email to notify all attendees.
+    sendEmail(event=currEvent, CANCELLATION=True)
     return redirect('/')
 
 
@@ -725,7 +733,7 @@ def verifyResetToken(user, token):
 
 
 # Function to send emails. Returns true once the email has been sent.
-def sendEmail(user=None, REGISTER=False, RESETPASS=False, CANCELLATION=False, EVENTNEARFULL=False, TICKET_BOUGHT=False):
+def sendEmail(user=None, event=None, REGISTER=False, RESETPASS=False, CANCELLATION=False, EVENTNEARFULL=False, TICKET_BOUGHT=False):
     '''
     @param 
         REGISTER - To verify an email when someone is registering
@@ -734,13 +742,8 @@ def sendEmail(user=None, REGISTER=False, RESETPASS=False, CANCELLATION=False, EV
         SUPERUSER_EVENTNEARFULL - The superuser needs to emailed when an event is near capacity.
         TICKET_BOUGHT - An attendee needs to be emailed their ticket once they buy one, along with the barcode.
     '''
-    # mail.send_message(sender=("NOREPLY", sender), subject="FLASK-MAIL TEST", body="Testing", recipients=recipients)
-    # return True
-
+    # The email address that the email will be sent from.
     sender = f"{os.getlogin()}@dcs.warwick.ac.uk"
-
-    # if emailType == "register":
-
 
     if RESETPASS:
         token = createResetToken(user)
@@ -752,6 +755,7 @@ def sendEmail(user=None, REGISTER=False, RESETPASS=False, CANCELLATION=False, EV
 If you haven't requested a password link, please ignore this email.
 - EVENTBYTE''',
                           recipients=recipients)
+        return True
         
     # User is a dictionary in this case, as a user instance doesn't exist for a unregistered user.
     if REGISTER:
@@ -764,6 +768,41 @@ If you haven't requested a password link, please ignore this email.
 If you haven't tried to register to EVENTBYTE, please ignore this email.
 - EVENTBYTE''',
                            recipients=recipients)
+        return True
+    
+    if CANCELLATION:
+        # Get all users who are attending
+        recipients = [email for email, in event["recipients"]]
+        print("Recipients are", recipients)
+        print(len(recipients))
+        if not recipients == []:
+            mail.send_message(sender=("NOREPLY", sender),
+                            subject=f"EVENT CANCELLED: {event['name']}",
+                            body=f'''Unfortunately the event, {event['name']}, which was due to take place on {event['datetime'].strftime('%A')} {event['datetime'].strftime('%d')} {event['datetime'].strftime('%b')} {event['datetime'].strftime('%Y')} has been cancelled by the event owner.
+Your ticket on the EVENTBYTE application has been removed, and any refunds will be sent through within 3-5 working days.
+
+Apologies,
+The EVENTBYTE team''',
+                            recipients=recipients)
+            return True
+        # No one booked the event.
+        else:
+            return False
+        
+    if TICKET_BOUGHT:
+        # Need to send an email with the event id, the user, and the bar code attached.
+        recipients = [user.email]
+        mail.send_message(sender=("NOREPLY", sender),
+                          subject=f"Ticket Purchase Confirmation: {event.name}",
+                          body=f''' Hi {user.username}
+
+'''
+
+
+
+
+        
+
                         
         
     

@@ -9,5 +9,3 @@ def createBarcode(ticketRef):
     
     myCode = EAN13(strTicketRef)
     myCode.save("static/images/currBarCode")
-
-    print(strTicketRef)

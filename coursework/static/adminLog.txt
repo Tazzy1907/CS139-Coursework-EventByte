@@ -20,3 +20,30 @@
 |    LOGOUT     |	 2		|	 N/A		|	 N/A		|	 2024-02-27 11:05:45.973093		|	 NONE		|
 |     LOGIN     |	 3		|	 N/A		|	 N/A		|	 2024-02-27 11:05:50.841033		|	 NONE		|
 |    LOGOUT     |	 3		|	 N/A		|	 N/A		|	 2024-02-27 11:07:06.168711		|	 NONE		|
+|     LOGIN     |	 2		|	 N/A		|	 N/A		|	 2024-02-27 11:10:34.724080		|	 NONE		|
+|    LOGOUT     |	 2		|	 N/A		|	 N/A		|	 2024-02-27 11:22:29.712842		|	 NONE		|
+|     LOGIN     |	 1		|	 N/A		|	 N/A		|	 2024-02-27 11:22:33.833720		|	 NONE		|
+|  DELETE EVENT |	 1		|	 5		|	 N/A		|	 2024-02-27 11:24:43.533183		|	 NONE		|
+|  DELETE EVENT |	 1		|	 5		|	 N/A		|	 2024-02-27 11:30:13.637705		|	 NONE		|
+|  DELETE EVENT |	 1		|	 5		|	 N/A		|	 2024-02-27 11:30:58.246730		|	 NONE		|
+|  DELETE EVENT |	 1		|	 5		|	 N/A		|	 2024-02-27 11:32:16.236050		|	 NONE		|
+|  DELETE EVENT |	 1		|	 1		|	 N/A		|	 2024-02-27 11:32:38.034487		|	 NONE		|
+|  DELETE EVENT |	 1		|	 5		|	 N/A		|	 2024-02-27 11:33:39.058263		|	 NONE		|
+|  DELETE EVENT |	 1		|	 5		|	 N/A		|	 2024-02-27 11:34:29.359592		|	 NONE		|
+|     LOGIN     |	 1		|	 N/A		|	 N/A		|	 2024-02-27 11:57:57.201745		|	 NONE		|
+|  DELETE EVENT |	 1		|	 1		|	 N/A		|	 2024-02-27 11:58:02.779995		|	 NONE		|
+|  DELETE EVENT |	 1		|	 2		|	 N/A		|	 2024-02-27 11:58:56.787723		|	 NONE		|
+|  DELETE EVENT |	 1		|	 5		|	 N/A		|	 2024-02-27 11:59:00.616887		|	 NONE		|
+|  DELETE EVENT |	 1		|	 5		|	 N/A		|	 2024-02-27 11:59:37.269121		|	 NONE		|
+|  DELETE EVENT |	 1		|	 5		|	 N/A		|	 2024-02-27 12:01:17.443794		|	 NONE		|
+|  DELETE EVENT |	 1		|	 5		|	 N/A		|	 2024-02-27 12:02:47.381426		|	 NONE		|
+|  DELETE EVENT |	 1		|	 5		|	 N/A		|	 2024-02-27 12:03:03.901511		|	 NONE		|
+|  DELETE EVENT |	 1		|	 5		|	 N/A		|	 2024-02-27 12:03:42.717023		|	 NONE		|
+|  DELETE EVENT |	 1		|	 5		|	 N/A		|	 2024-02-27 12:03:59.984581		|	 NONE		|
+|  DELETE EVENT |	 1		|	 5		|	 N/A		|	 2024-02-27 12:04:08.373741		|	 NONE		|
+|  DELETE EVENT |	 1		|	 5		|	 N/A		|	 2024-02-27 12:08:52.403826		|	 NONE		|
+|  DELETE EVENT |	 1		|	 5		|	 N/A		|	 2024-02-27 12:10:07.975536		|	 NONE		|
+|  DELETE EVENT |	 1		|	 1		|	 N/A		|	 2024-02-27 12:10:19.896608		|	 NONE		|
+|  DELETE EVENT |	 1		|	 1		|	 N/A		|	 2024-02-27 12:12:03.255438		|	 NONE		|
+|  DELETE EVENT |	 1		|	 1		|	 N/A		|	 2024-02-27 12:15:24.699520		|	 NONE		|
+|  DELETE EVENT |	 1		|	 1		|	 N/A		|	 2024-02-27 12:17:43.589826		|	 NONE		|
