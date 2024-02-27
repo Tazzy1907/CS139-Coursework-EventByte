@@ -247,12 +247,27 @@ input[type=submit]:hover {
 }
 
 /* FOR THE CREATE EVENT FORM */
-#createEventFormContainer {
+#createEventFormContainer, #newPasswordFormContainer{
     width: 23%;
     margin: auto;
 }
 
-#createEventForm {
+#setNewPassword label {
+    width: 50%;
+    float: left;
+}
+
+#setNewPassword input {
+    width: 40%;
+    float: right;
+}
+
+#setNewPassword input[type=submit] {
+    margin:auto;
+    width: 100%;
+}
+
+#createEventForm, #setNewPassword {
     width: 100%;
     font-family: 'Anta', serif;
     font-size: 35px;
@@ -264,7 +279,7 @@ input[type=submit]:hover {
     display: block;
 }
 
-#createEventForm #formGroup {
+#createEventForm #formGroup, #setNewPassword #formGroup {
     width: 100%;
     display: inline-block;
     padding: 10px;
