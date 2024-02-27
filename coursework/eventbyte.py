@@ -74,26 +74,63 @@ def register():
             return redirect('/register')
         
         passwordHash = security.generate_password_hash(password)
-        
-        # Attempt to add user to the database.
-        try:
-            newUser = User(name, email, passwordHash)
-            db.session.add(newUser)
-            db.session.commit()
-        except IntegrityError as err:
-            db.session.rollback()
-            flash("Could not register" + str(err))
-            return redirect('/register')
-        
-        # User has been added to the database.
-        flash("You have registered successfully, you may now log in")
-        writeAdminLog("register", 0, 0, newUser.user_id)
 
+        # Need a function that will send the email a generated token.
+
+        # If the token URl is then clicked, they will be redirected to a page where they are told their account information has been added.
+        sendEmail(user={"username": name, "email": email, "password": passwordHash}, REGISTER=True)
+        flash("You have been sent an email. Please validate your email through the link to finish registering.")
         return redirect('/login')
 
     # Website has been reloaded, etc. Not a form submission.
     if request.method == "GET":
         return render_template('register.html')
+
+
+def createRegisterToken(email, expires_sec = 1800):
+    s = Serializer(app.config['SECRET_KEY'], expires_sec)
+    return s.dumps({"email": email}).decode('utf-8')
+
+
+def verifyRegisterToken(email, token):
+    s = Serializer(app.config['SECRET_KEY'])
+    try:
+        email = s.loads(token)["email"]
+    except:
+        return False
+    return True
+
+
+
+@app.route("/registerConfirmation/<name>/<email>/<hash>/<token>", methods=["POST", "GET"])
+def registerConfirmation(name, email, hash, token):
+    
+    # Make sure user is not already logged in.
+    if current_user.is_authenticated:
+        return redirect('/home')
+    
+    # Someone has arrived here through the register link.
+    if request.method == "GET":
+        
+        # Check if the token is the same.
+        if not verifyRegisterToken(email, token):
+            flash("Your token is invalid or expired.")
+            return redirect('/login')
+        else:                    
+            # Attempt to add user to the database.
+            try:
+                newUser = User(name, email, hash)
+                db.session.add(newUser)
+                db.session.commit()
+            except IntegrityError as err:
+                db.session.rollback()
+                flash("Could not register" + str(err))
+                return redirect('/register')
+            
+            # User has been added to the database.
+            flash("You have registered successfully, you may now log in")
+            writeAdminLog("register", 0, 0, newUser.user_id)
+            return redirect('/login')
 
 
 # Route to the login page.
@@ -450,7 +487,7 @@ def deleteEvent():
     return redirect('/')
 
 
-# Route to reset password.
+# Route to reset password form.
 @app.route('/resetPass', methods=["GET", "POST"])
 def resetPass():
     if request.method == "POST":
@@ -475,12 +512,13 @@ def resetPass():
 # Route for requested password resets.
 @app.route('/requestedPasswordReset/<email>/<token>', methods=["POST", "GET"])
 def requestedPasswordReset(email, token):
-
+    
+    # Make sure the user isn't already logged in.
+    if current_user.is_authenticated:
+        return redirect('/home')
+    
     # Someone has arrived here through a reset password link.
     if request.method == "GET":
-        # Make sure the user isn't already logged in.
-        if current_user.is_authenticated:
-            return redirect('/home')
 
         # Find the associated user with this email.
         user = User.query.filter_by(email=email)
@@ -696,7 +734,6 @@ def sendEmail(user=None, REGISTER=False, RESETPASS=False, CANCELLATION=False, EV
         SUPERUSER_EVENTNEARFULL - The superuser needs to emailed when an event is near capacity.
         TICKET_BOUGHT - An attendee needs to be emailed their ticket once they buy one, along with the barcode.
     '''
-    # recipients = ["tanlinsir@gmail.com"]
     # mail.send_message(sender=("NOREPLY", sender), subject="FLASK-MAIL TEST", body="Testing", recipients=recipients)
     # return True
 
@@ -715,6 +752,19 @@ def sendEmail(user=None, REGISTER=False, RESETPASS=False, CANCELLATION=False, EV
 If you haven't requested a password link, please ignore this email.
 - EVENTBYTE''',
                           recipients=recipients)
+        
+    # User is a dictionary in this case, as a user instance doesn't exist for a unregistered user.
+    if REGISTER:
+        token = createRegisterToken(user["email"])
+        recipients =[user["email"]]
+        mail.send_message(sender=("NOREPLY", sender),
+                          subject="Register Confirmation Link",
+                          body=f'''Click the below link to confirm your registration to the EVENTBYTE service.
+{url_for('registerConfirmation', name=user["username"], hash=user["password"], token=token, email=user["email"], _external=True)}
+If you haven't tried to register to EVENTBYTE, please ignore this email.
+- EVENTBYTE''',
+                           recipients=recipients)
+                        
         
     
 

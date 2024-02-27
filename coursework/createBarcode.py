@@ -5,7 +5,7 @@ def createBarcode(ticketRef):
     '''
     @param ticketRef - Int
     '''
-    strTicketRef = ((13 - len(str(ticketRef))) * "0") + str(ticketRef)
+    strTicketRef = ((12 - len(str(ticketRef))) * "0") + str(ticketRef) +"0"
     
     myCode = EAN13(strTicketRef)
     myCode.save("static/images/currBarCode")
